@@ -8,11 +8,11 @@ Preset config for my repositories.
 
 ```json
 {
-  "extends": ["github>unional/renovate-preset"]
+  "extends": ["github>repobuddy/renovate-preset"]
 }
 ```
 
-`github>unional/renovate-preset` resolves to `default.json` on the default
+`github>repobuddy/renovate-preset` resolves to `default.json` on the default
 branch, so a change here reaches every consuming repo on its next run. There is
 no tag to move.
 
@@ -43,6 +43,13 @@ first, then copy it here.
   - weekly lock file maintenance (`lockFileMaintenance`).
 - **Majors of runtime dependencies stay manual.** They do not automerge, and
   their branches carry a `major-` prefix so they are easy to find.
+- **Changeset labels for the shared `dep-changeset.yml` workflow**
+  ([repobuddy/.github](https://github.com/repobuddy/.github)). Updates to
+  `dependencies`, `optionalDependencies` and pnpm catalog entries
+  (`pnpm.catalog.*`) get `dep-changeset:auto` for minor, patch, pin and digest
+  updates, and `dep-changeset:human` for majors. Every `peerDependencies` update
+  gets `dep-changeset:human`. The workflow fails closed on a runtime change with
+  neither label.
 - **`rebaseWhen: "behind-base-branch"`**: branches are refreshed whenever the
   base branch moves, not only when they conflict.
 
@@ -64,11 +71,34 @@ dependency sets it locally:
 
 ```json
 {
-  "extends": ["github>unional/renovate-preset"],
+  "extends": ["github>repobuddy/renovate-preset"],
   "packageRules": [
     {
       "matchPackageNames": ["typescript"],
       "allowedVersions": "<6"
+    }
+  ]
+}
+```
+
+### Runtime majors in private apps
+
+The preset holds every `dependencies` major for dependency dashboard approval.
+That protects published packages, but a private app (such as `apps/website`)
+publishes nothing, so the wait is noise. Only the repo knows which packages are
+private, so the preset cannot lift it. A repo lifts it with a local rule that
+matches the app's package file:
+
+```json
+{
+  "extends": ["github>repobuddy/renovate-preset"],
+  "packageRules": [
+    {
+      "description": "Private apps publish nothing: their runtime majors need no approval",
+      "matchFileNames": ["apps/**"],
+      "matchUpdateTypes": ["major"],
+      "matchDepTypes": ["dependencies"],
+      "dependencyDashboardApproval": false
     }
   ]
 }
