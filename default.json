@@ -45,13 +45,13 @@
 		},
 		{
 			"description": "Changeset contract: the shared workflow may write a patch changeset for these",
-			"matchDepTypes": ["dependencies"],
+			"matchDepTypes": ["dependencies", "optionalDependencies", "pnpm.catalog.*"],
 			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
 			"addLabels": ["dep-changeset:auto"]
 		},
 		{
 			"description": "Changeset contract: a person writes the changeset for these",
-			"matchDepTypes": ["dependencies"],
+			"matchDepTypes": ["dependencies", "optionalDependencies", "pnpm.catalog.*"],
 			"matchUpdateTypes": ["major"],
 			"addLabels": ["dep-changeset:human"]
 		},
