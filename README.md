@@ -41,6 +41,9 @@ first, then copy it here.
   - any update to a `devDependencies` entry, including a major one;
   - vulnerability fixes, after a 1 day soak (`vulnerabilityAlerts`);
   - weekly lock file maintenance (`lockFileMaintenance`).
+- **`@types/node` never merges by itself.** It tracks the Node range a package
+  supports, so every update, of any size, waits for a person. Its majors also
+  wait for dependency dashboard approval, like Node majors.
 - **Majors of runtime dependencies stay manual.** They do not automerge, and
   their branches carry a `major-` prefix so they are easy to find.
 - **Changeset labels for the shared `dep-changeset.yml` workflow**
